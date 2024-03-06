@@ -1,0 +1,136 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id Int @default(autoincrement()) @id
+  email String 
+  name String
+  hash String
+
+  order Order[]
+  cart Cart?
+  reviews Review[]
+
+  @@map("users")
+}
+
+model Product {
+  id Int @default(autoincrement()) @id
+  name String
+  category String
+  brand String
+  price Float
+  discount Float?
+  details Json
+
+  images ProductImage[]
+  order_items OrderItems[]
+  cart_items CartItems[]
+  reviews Review[]
+
+  @@map("products")
+}
+
+model ProductImage {
+  id Int @default(autoincrement()) @id
+  url String
+  product_id Int
+
+  product Product @relation(fields: [product_id], references: [id])
+
+  @@map("product_images")
+}
+
+model Order {
+  id Int @default(autoincrement()) @id
+  total_sum Float
+  created_at DateTime @default(now())
+  status OrderStatus @default(Pending)
+  user_id Int
+
+  user User @relation(fields: [user_id], references: [id])
+  order_items OrderItems[]
+  
+  @@map("orders")
+}
+
+model OrderItems {
+  id Int @default(autoincrement()) @id
+  quantity Int
+  order_id Int
+  product_id Int
+
+  order Order @relation(fields: [order_id], references: [id])
+  product Product @relation(fields: [product_id], references: [id])
+
+  @@map("order_items")
+}
+
+model Cart {
+  id Int @default(autoincrement()) @id
+  total_sum Int
+  user_id Int @unique
+
+  user User @relation(fields: [user_id], references: [id])
+  items CartItems[]
+
+  @@map("carts")
+}
+
+model CartItems {
+  id Int @default(autoincrement()) @id
+  quantity Int
+  product_id Int
+  cart_id Int
+
+  cart Cart @relation(fields: [cart_id], references: [id])
+  product Product @relation(fields: [product_id], references: [id])
+  
+  @@map("cart_items")
+}
+
+model Review {
+  id Int @default(autoincrement()) @id
+  text String
+  rating Float
+  product_id Int
+  user_id Int
+  published DateTime @default(now())
+
+  product Product @relation(fields: [product_id], references: [id])
+  user User @relation(fields: [user_id], references: [id])
+  @@map("reviews")
+}
+
+model Admin {
+  id Int @default(autoincrement()) @id
+  login String @unique
+  hash String
+
+  @@map("admin")
+}
+
+
+enum OrderStatus {
+  Pending
+  Delivered
+  Canceled
+}
+
+
+
+
+
