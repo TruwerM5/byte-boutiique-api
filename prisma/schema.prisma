@@ -16,9 +16,10 @@ datasource db {
 
 model User {
   id Int @default(autoincrement()) @id
-  email String 
+  email String @unique
   name String
   hash String
+  roles Roles @default(user)
 
   order Order[]
   cart Cart?
@@ -123,6 +124,10 @@ model Admin {
   @@map("admin")
 }
 
+enum Roles {
+  user
+  admin
+}
 
 enum OrderStatus {
   Pending
