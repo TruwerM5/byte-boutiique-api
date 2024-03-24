@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { User, Prisma, Admin } from '@prisma/client';
+import { User, Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { SignUpUserDto } from './dto/user-signup.dto';
 import { BadRequestException } from '@nestjs/common';
@@ -30,5 +30,19 @@ export class UsersService {
                     hash,
                 }
             })
+    }
+
+    async createAdmin({username, password}): Promise<User> {
+        const salt = await bcrypt.genSalt();
+        const hash = await bcrypt.hash(password, salt);
+
+        return this.prisma.user.create({
+            data: {
+                email: username,
+                hash,
+                roles: 'admin', 
+                name: 'admin',
+            }
+        })
     }
 }

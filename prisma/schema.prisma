@@ -35,8 +35,8 @@ model Product {
   brand String
   price Float
   discount Float?
-  details Json
 
+  details ProductDetail[]
   images ProductImage[]
   order_items OrderItems[]
   cart_items CartItems[]
@@ -53,6 +53,16 @@ model ProductImage {
   product Product @relation(fields: [product_id], references: [id])
 
   @@map("product_images")
+}
+
+model ProductDetail {
+  id Int @default(autoincrement()) @id
+  details Json
+  product_id Int
+
+  product Product @relation(fields: [product_id], references: [id])
+
+  @@map("product_details")
 }
 
 model Order {
@@ -116,13 +126,13 @@ model Review {
   @@map("reviews")
 }
 
-model Admin {
-  id Int @default(autoincrement()) @id
-  login String @unique
-  hash String
+// model Admin {
+//   id Int @default(autoincrement()) @id
+//   login String @unique
+//   hash String
 
-  @@map("admin")
-}
+//   @@map("admin")
+// }
 
 enum Roles {
   user

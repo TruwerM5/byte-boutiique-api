@@ -2,6 +2,16 @@ import { IsNumber, IsNotEmpty, IsJSON } from "class-validator";
 
 export class CreateProductDto {
 
+    // @IsNotEmpty()
+    // data: {
+        // name: string;
+        // price: number;
+        // brand: string;
+        // category: string;
+        // discount: number;
+        // details: string;
+    // }
+
     @IsNotEmpty()
     name: string;
 
@@ -16,8 +26,4 @@ export class CreateProductDto {
 
     @IsNotEmpty()
     discount: number;
-
-    @IsNotEmpty()
-    @IsJSON()
-    details: string;
 }   

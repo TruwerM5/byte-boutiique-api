@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
 import { SignUpUserDto } from 'src/users/dto/user-signup.dto';
@@ -6,6 +6,7 @@ import { LocalAuthGuard } from './local-auth.guard';
 import { Roles } from 'src/users/roles.decorator';
 import { Role } from 'src/users/role.enum';
 import { RolesGuard } from 'src/users/roles.guard';
+import { User } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
@@ -38,5 +39,10 @@ export class AuthController {
     @UseGuards(LocalAuthGuard,RolesGuard)
     create(@Body() body, @Req() req) {
         return 'user is created';
+    }
+
+    @Post('create-admin')
+    async createAdmin(@Body() body: SignUpUserDto, @Param() id: number): Promise<User> {
+        return this.usersService.createAdmin(body);
     }
 }
